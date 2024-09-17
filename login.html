@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Page</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js"></script>
+</head>
+<body>
+    <h2>Signup</h2>           
+    <input type="email" id="email" placeholder="Email" required>        
+    <input type="password" id="password" placeholder="Password" required>
+    <p id="err"></p>
+    <button onclick="register()">Register</button>  
+
+    <h2>Login</h2>           
+    <input type="email" id="logemail" placeholder="Email" required>        
+    <input type="password" id="logpassword" placeholder="Password" required>
+    <p id="err1"></p>
+    <button onclick="login()">Login</button>  
+
+    <h2>Forgot Password</h2>
+    <input type="email" id="email3" placeholder="Enter your email" required>
+    <button onclick="forgot()">Send Password Reset Email</button>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAHTsubD4eZm1uM7URJur8q_nMt5KfzT8s",
+            authDomain: "loginsys-5350d.firebaseapp.com",
+            projectId: "loginsys-5350d",
+            storageBucket: "loginsys-5350d.appspot.com",
+            messagingSenderId: "975918066375",
+            appId: "1:975918066375:web:cce40d8cf890cdb90cece2"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Define the register function in the global scope
+        window.register = function() {
+            const email = document.getElementById("email").value;
+            const pass = document.getElementById("password").value;
+
+            createUserWithEmailAndPassword(auth, email, pass)
+                .then((userCredential) => {
+                    // Signed up 
+                    const user = userCredential.user;
+                    console.log("User registered:", user);
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    document.getElementById("err").innerText = `Error: ${errorMessage}`;
+                });
+        };
+
+        // Define the login function in the global scope
+        window.login = function() {
+            const emaillog = document.getElementById("logemail").value;
+            const passlog = document.getElementById("logpassword").value;
+
+            signInWithEmailAndPassword(auth, emaillog, passlog)
+                .then((userCredential) => {
+                    // Logged in 
+                    const user = userCredential.user;
+                    console.log("User logged in:", user);
+                    window.location.replace("nextpage.html");
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    document.getElementById("err1").innerText = `Error: ${errorMessage}`;
+                });
+        };
+
+        // Define the forgot function in the global scope
+        window.forgot = function() {
+            const email = document.getElementById("email3").value;
+
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    window.alert("Password reset email sent");
+                })
+                .catch((error) => {
+                    console.error("Error sending password reset email: ", error);
+                    window.alert("Failed to send password reset email. Please try again.");
+                });
+        };
+    </script>
+</body>
+</html>
